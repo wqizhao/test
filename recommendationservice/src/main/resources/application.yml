@@ -1,0 +1,69 @@
+server:
+  port: 1112
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: "*"
+        cors:
+          allowed-origins: "*"
+          allowed-methods: "*"
+spring:
+  datasource:
+     driver-class-name: com.mysql.jdbc.Driver
+#     url: jdbc:mysql://192.168.60.111:3306/seed
+#     username: root
+#     password: root
+     url: jdbc:mysql://127.0.0.1:3308/seed
+     username: root
+     password: 123456
+  redis:
+       database: 0
+       host: 127.0.0.1
+#       host: 192.168.60.115
+       port: 6379
+#       password: "!qaz2wsx"
+       password:
+       timeout: 20000
+       jedis:
+         pool:
+           max-active: 8
+           max-wait: -1
+           max-idle: 8
+           min-idle: 0
+
+  application:
+    name: recommendationService
+mybatis:
+  type-aliases-package: com.rainier.pojo
+  mapper-locations: classpath:mappers/*.xml
+  call-setters-on-nulls: true
+
+  configuration:
+    default-executor-type: simple
+mapper:
+    mappers: com.rainier.tool.CommonMapper
+    not-empty: false
+    identity: MYSQL
+eureka:
+  client:
+    serviceUrl:
+#      defaultZone: http://192.168.60.115:9999/eureka/
+       defaultZone: http://127.0.0.1:9999/eureka/
+  instance:
+      # 每隔10s发送一次心跳
+      lease-renewal-interval-in-seconds: 10
+      # 告知服务端30秒还未收到心跳的话，就将该服务移除列表
+      lease-expiration-duration-in-seconds: 60
+ribbon:
+  #请求处理的超时时间
+  ReadTimeout: 120000
+  #请求连接的超时时间
+  ConnectTimeout: 60000
+logging:
+  level:
+     com.rainier.dao : debug
+filePath:
+  uploads: C:/test/recommendFile/
+fileUrl:
+  uploads: http://192.168.60.219:8525/seed-recommendationService/recommendFile/

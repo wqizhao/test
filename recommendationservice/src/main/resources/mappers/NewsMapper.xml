@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rainier.dao.NewsDao">
+  <resultMap id="BaseResultMap" type="com.rainier.pojo.NewsDo">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="uuid" jdbcType="VARCHAR" property="uuid" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="img_url" jdbcType="VARCHAR" property="imgUrl" />
+    <result column="source" jdbcType="VARCHAR" property="source" />
+    <result column="author" jdbcType="VARCHAR" property="author" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="issue_date" jdbcType="VARCHAR" property="issueDate" />
+    <result column="county" jdbcType="VARCHAR" property="county" />
+    <result column="province" jdbcType="VARCHAR" property="province" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="source_date" jdbcType="TIMESTAMP" property="sourceDate" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="modified" jdbcType="TIMESTAMP" property="modified" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="modified_by" jdbcType="VARCHAR" property="modifiedBy" />
+    <result column="state" jdbcType="VARCHAR" property="state" />
+    <result column="source_Id" jdbcType="VARCHAR" property="sourceId" />
+    <result column="source_county" jdbcType="VARCHAR" property="sourceCounty" />
+    <result column="source_province" jdbcType="VARCHAR" property="sourceProvince" />
+    <result column="source_city" jdbcType="VARCHAR" property="sourceCity" />
+    <result column="headline" jdbcType="BIT" property="headline" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, uuid, type, title, img_url, source, author, url, issue_date, county, province, 
+    city, source_date, created, modified, create_by, modified_by, state, source_Id, source_county, 
+    source_province, source_city, headline
+  </sql>
+  <select id="selectNewsTops"
+          resultType="com.rainier.pojo.ResourceModel">
+		select n.uuid,n.title,DATE_FORMAT(n.created,'%Y年%m月%d日') as createDateStr,n.created as createDate,2 as type,
+        ifnull((e.browse_num+e.comment_num+e.like_num+e.share_num+e.favorite_num+e.download_num+e.note_num),1) as totalNum
+        from  news n left join item_ext e  on n.uuid = e.item_uuid
+        order by n.created desc
+      <if test="num !=0">
+        LIMIT #{num};
+      </if>
+	</select>
+
+  <select id="selectNewsByIds" resultType="com.rainier.pojo.ResourceModel">
+    select n.uuid,n.title,DATE_FORMAT(n.created,'%Y年%m月%d日') as createDateStr,n.created as createDate,2 as type,
+    ifnull((e.browse_num+e.comment_num+e.like_num+e.share_num+e.favorite_num+e.download_num+e.note_num),1) as totalNum
+    from  news n left join item_ext e  on n.uuid = e.item_uuid
+    where n.id in
+    <foreach collection="list" item="id" index="index"
+             open="(" close=")" separator=",">
+      #{id}
+    </foreach>
+    order by n.created desc
+  </select>
+</mapper>

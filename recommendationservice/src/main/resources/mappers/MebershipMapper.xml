@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rainier.dao.MebershipDao">
+  <resultMap id="BaseResultMap" type="com.rainier.pojo.MebershipDo">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="uuid" jdbcType="VARCHAR" property="uuid" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="display_name" jdbcType="VARCHAR" property="displayName" />
+    <result column="domain" jdbcType="VARCHAR" property="domain" />
+    <result column="total_points" jdbcType="DECIMAL" property="totalPoints" />
+    <result column="spend_points" jdbcType="DECIMAL" property="spendPoints" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="ip" jdbcType="VARCHAR" property="ip" />
+    <result column="location" jdbcType="VARCHAR" property="location" />
+    <result column="head_img_url" jdbcType="VARCHAR" property="headImgUrl" />
+    <result column="level" jdbcType="VARCHAR" property="level" />
+    <result column="growth" jdbcType="DECIMAL" property="growth" />
+    <result column="introduction" jdbcType="VARCHAR" property="introduction" />
+    <result column="created" jdbcType="TIMESTAMP" property="created" />
+    <result column="modified" jdbcType="TIMESTAMP" property="modified" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="state" jdbcType="VARCHAR" property="state" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, uuid, name, password, display_name, domain, total_points, spend_points, phone, 
+    email, address, type, ip, location, head_img_url, level, growth, introduction, created, 
+    modified, remark, state
+  </sql>
+ <!-- <insert id="insertAndGetId"  useGeneratedKeys="true" keyProperty="id" parameterType="com.rainier.pojo.MebershipDo">
+    <selectKey keyProperty="uuid" keyColumn="uuid" resultType="string" order="BEFORE">
+      select replace(uuid(), '-', '') as id from dual
+    </selectKey>&ndash;&gt;
+    insert into mebership ( name,
+      password, display_name, domain,
+      total_points, spend_points, phone,
+      email, address, type,
+      ip, location, head_img_url,
+      level, growth, introduction,
+      created, modified, remark,
+      state)
+    values ( #{name,jdbcType=VARCHAR},
+      #{password,jdbcType=VARCHAR}, #{displayName,jdbcType=VARCHAR}, #{domain,jdbcType=VARCHAR},
+      #{totalPoints,jdbcType=DECIMAL}, #{spendPoints,jdbcType=DECIMAL}, #{phone,jdbcType=VARCHAR},
+      #{email,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR},
+      #{ip,jdbcType=VARCHAR}, #{location,jdbcType=VARCHAR}, #{headImgUrl,jdbcType=VARCHAR},
+      #{level,jdbcType=VARCHAR}, #{growth,jdbcType=DECIMAL}, #{introduction,jdbcType=VARCHAR},
+      #{created,jdbcType=TIMESTAMP}, #{modified,jdbcType=TIMESTAMP}, #{remark,jdbcType=VARCHAR},
+      #{state,jdbcType=VARCHAR})
+
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+  </insert>-->
+  <select id="selectMeberByUuid"
+          resultType="com.rainier.pojo.MebershipDo">
+		select * from mebership
+		 where uuid = '${uuid}'
+	</select>
+  <select id="selectMeberByNameAndPwd"
+          resultType="com.rainier.pojo.MebershipDo">
+		select * from mebership
+		 where name = '${name}' and password = '${password}'
+	</select>
+
+  <select id="selectMembershipTops"
+          resultMap="BaseResultMap">
+    SELECT
+    *
+    FROM
+    mebership m
+    where m.state = '注册'
+    order by m.created desc
+    <if test="num !=0">
+      LIMIT #{num};
+    </if>
+  </select>
+
+  <select id="selectMebersByCity"
+          resultMap="BaseResultMap">
+    SELECT
+    *
+    FROM
+    mebership m
+    where m.state = '注册' and m.type ='1'
+    <if test="location != null and location != ''">
+      AND m.location like concat('%',#{location},'%')
+    </if>
+    order by m.created desc
+    <if test="num !=0">
+      LIMIT #{num};
+    </if>
+  </select>
+  <select id="selectMemberships"
+          resultMap="BaseResultMap">
+    SELECT
+    *
+    FROM
+    mebership m
+    where uuid not in
+    <foreach collection="uuids" item="uuid" open="(" close=")" separator=",">
+      #{uuids}
+    </foreach>
+    where m.state = '注册' and m.type ='1'
+    order by m.created desc
+    <if test="num !=0">
+      LIMIT #{num};
+    </if>
+  </select>
+</mapper>

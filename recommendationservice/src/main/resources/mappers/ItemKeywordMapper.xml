@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rainier.dao.ItemKeywordDao">
+    <resultMap id="BaseResultMap" type="com.rainier.pojo.ItemKeywordDo">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="uuid" jdbcType="VARCHAR" property="uuid" />
+        <result column="item_uuid" jdbcType="VARCHAR" property="itemUuid" />
+        <result column="keyword" jdbcType="VARCHAR" property="keyword" />
+        <result column="tf" jdbcType="INTEGER" property="tf" />
+        <result column="idf" jdbcType="DECIMAL" property="idf" />
+        <result column="item_type" jdbcType="INTEGER" property="itemType" />
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, uuid, item_uuid, keyword, tf, idf, item_type
+  </sql>
+    <select id="getItemKeywordList"
+            resultMap="BaseResultMap">
+		SELECT
+		*
+		FROM item_keyword
+		WHERE
+		tf> #{num} and LENGTH(keyword)> #{strLong}
+	</select>
+</mapper>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rainier.dao.KeywordSimilarityDao">
+   <!-- <resultMap id="BaseResultMap" type="com.rainier.pojo.KeywordSimilarityDo">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="key_word" jdbcType="VARCHAR" property="keyWord" />
+        <result column="uuid" jdbcType="VARCHAR" property="uuid" />
+        <result column="item_uuid" jdbcType="VARCHAR" property="itemUuid" />
+        <result column="count_key_similarity" jdbcType="DECIMAL" property="countKeySimilarity" />
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, key_word, uuid, item_uuid, count_key_similarity
+  </sql>-->
+
+    <select id="getListByItemUuid"
+            resultType="java.util.HashMap">
+		select item_uuid as itemUuid ,sum(count_key_similarity) as countNum from keyword_similarity
+		 where item_uuid = '${itemUuid}'
+		 group by item_uuid
+	</select>
+</mapper>
